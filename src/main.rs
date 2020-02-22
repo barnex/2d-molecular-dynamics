@@ -12,7 +12,6 @@ use sdl2::render::Texture;
 use sdl2::EventPump;
 use std::error;
 use std::path::Path;
-use std::time;
 
 pub fn main() -> Result<()> {
 	// ---- set up world

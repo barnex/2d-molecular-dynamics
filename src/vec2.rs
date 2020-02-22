@@ -2,6 +2,7 @@ use std::cmp::PartialEq;
 use std::fmt;
 use std::ops::*;
 
+/// A 2-component (X, Y) vector.
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Vec2 {
 	el: [f32; 2],
@@ -18,18 +19,20 @@ impl Vec2 {
 		Self { el: [x, y] }
 	}
 
+	/// Multiply-add
 	#[inline]
 	pub fn fmadd(self, t: f32, b: Self) -> Self {
 		self + (b * t)
 	}
 
+	/// Dot product
 	#[inline]
 	pub fn dot(self, rhs: Self) -> f32 {
 		self[0] * rhs[0] + self[1] * rhs[1]
 	}
 
-	#[inline]
 	/// Len returns the length (norm).
+	#[inline]
 	pub fn len(self) -> f32 {
 		self.dot(self).sqrt()
 	}
@@ -47,11 +50,13 @@ impl Vec2 {
 		self * (1. / self.len())
 	}
 
+	/// Scale length to 1.
 	#[inline]
 	pub fn normalize(&mut self) {
 		*self = self.normalized()
 	}
 
+	/// Check if length is 1 (within precision)
 	pub fn is_normalized(&self) -> bool {
 		(self.len() - 1.0).abs() < 1e-6
 	}

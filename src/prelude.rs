@@ -1,5 +1,4 @@
 pub use super::atom::*;
-pub use super::render::*;
 pub use super::vec2::*;
 
 // linear interpolation

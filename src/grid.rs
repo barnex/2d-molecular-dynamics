@@ -1,8 +1,10 @@
 use crate::atom;
 use crate::prelude::*;
 
+/// Fast O(N) force calculation by separating atoms in grid cells,
+/// and only considering forces between atoms in adjacent cells.
 pub fn f_fast(atoms: &Vec<Atom>, w: f32, h: f32, s: f32) -> Vec<Vec2> {
-	let n_x = (w / s) as usize + 1; // TODO: inaccurate rounding
+	let n_x = (w / s) as usize + 1;
 	let n_y = (h / s) as usize + 1;
 	let mut grid = Grid::new(n_x, n_y, s);
 	grid.copy(atoms);
@@ -19,6 +21,8 @@ struct Grid {
 type Cell = Vec<(u32, Vec2)>;
 
 impl Grid {
+	/// New accelleration grid with given number of cells and cell size.
+	/// Cell size should be at least the interaction range.
 	fn new(n_x: usize, n_y: usize, cell_size: f32) -> Grid {
 		let n_cell = n_x * n_y;
 		let mut cells = Vec::with_capacity(n_cell);
@@ -49,6 +53,7 @@ impl Grid {
 		}
 	}
 
+	/// O(N) force calculation
 	pub fn force(&self, n_atoms: usize) -> Vec<Vec2> {
 		let mut f = vec![Vec2::zero(); n_atoms];
 		for iy in 0..self.n_y {
@@ -59,6 +64,7 @@ impl Grid {
 		f
 	}
 
+	/// Add the forces of all atoms in a given cell.
 	fn add_f_cell(&self, f: &mut Vec<Vec2>, my_x: i32, my_y: i32) {
 		let my_index = self.cell_index(my_x, my_y);
 		self.add_f_self(f, my_index);
@@ -82,6 +88,7 @@ impl Grid {
 		}
 	}
 
+	/// Add the forces of the atoms inside a cell.
 	fn add_f_self(&self, f: &mut Vec<Vec2>, cell_index: usize) {
 		let atoms = &self.cells[cell_index];
 		for i in 0..atoms.len() {
@@ -95,6 +102,7 @@ impl Grid {
 		}
 	}
 
+	/// Add the forces of all atoms in a neighboring cell.
 	fn add_f_neigh(&self, f: &mut Vec<Vec2>, my_index: usize, their_index: usize) {
 		for (i1, p1) in &self.cells[my_index] {
 			for (i2, p2) in &self.cells[their_index] {
@@ -114,6 +122,7 @@ impl Grid {
 	}
 }
 
+// clamp x to interval [min, max].
 fn clamp<T: PartialOrd>(x: T, min: T, max: T) -> T {
 	if x < min {
 		return min;
