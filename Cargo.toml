@@ -1,0 +1,24 @@
+[package]
+name = "atoms"
+path = "src/lib.rs"
+version = "0.1.0"
+authors = ["Arne Vansteenkiste <barnex@gmail.com>"]
+edition = "2018"
+default-run= "main"
+
+
+[dependencies]
+rand = "0.7.3"
+image = "0.22.4"
+sdl2 = "0.33.0"
+
+[profile.release]
+debug = true
+
+[[bin]]
+name = "main"
+path = "src/main.rs"
+
+[[bin]]
+name = "bench"
+path = "src/bench.rs"
